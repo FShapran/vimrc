@@ -1,16 +1,12 @@
 " share ~/.vimrc between vim and neovim without a neovim config file
 " put this into .profile
-" export VIMINIT='let $MYVIMRC="$HOME/.vim/vimrc" | source $MYVIMRC'
+" export VIMINIT='let $MYVIMRC="$HOME/.vimrc" | source $MYVIMRC'
 " map to open ~/.vimrc file in a split
 nnoremap <leader>ev :vsplit $MYVIMRC<CR>
 set number
-nnoremap <silent> <F2> :set nonumber!<CR>
+nnoremap <F2> :set nonumber!<CR>
 set background=light "for neovim
 set mouse=a  " enable mouse
-set encoding=utf-8
-set noswapfile          " To disable the swap files
-set scrolloff=7
-set cursorline
 
 " cursor shape for vim. It doesn't need for nvim:
 if &term =~? 'rxvt' || &term =~? 'xterm' || &term =~? 'st-'
@@ -26,14 +22,20 @@ if &term =~? 'rxvt' || &term =~? 'xterm' || &term =~? 'st-'
     " Normal Mode
     let &t_EI .= "\<Esc>[2 q"
 endif
-
+"Function: return window number
+"abort -> function will abort soon as error detected
+function! CurrWin() abort
+  let l:current_win = winnr()
+  return l:current_win
+endfunction
 set laststatus=2 "always show statusline
 set statusline=
-set statusline+=\ %n "buffer number
+set statusline+=\ \Win:\%{CurrWin()}
+set statusline+=\ \BufN:\%n "buffer number
 set statusline+=\ %F "full path to the file in the buffer
 set statusline+=\ %m "modified
 set statusline+=\ %r "read only flag
-set statusline+=\ \Total=\%L "number of lines in buffer
+set statusline+=\ \Lines:\%L "number of lines in buffer
 
 " Enabling filetype support provides filetype-specific indenting,
 " syntax highlighting, omni-completion and other useful settings.
@@ -49,7 +51,7 @@ set hlsearch " Highlight search results for VIM
 
 " netrw
 let g:netrw_banner = 0
-let g:netrw_winsize = 25
+let g:netrw_winsize = 15
 let g:netrw_liststyle = 3
 "let g:netrw_browse_split = 4
 "always change pwd while browsing around with netrw
@@ -70,10 +72,8 @@ nnoremap <Right> :vertical resize +2<CR>
 noremap <c-h> <c-w><c-h>
 noremap <c-j> <c-w><c-j>
 noremap <c-k> <c-w><c-k>
-"noremap <c-l> <c-w><c-l>
-noremap <c-l> :wincmd l<CR>
+noremap <c-l> <c-w><c-l>
 
 " закрытие буфера с сохранением окна
 nnoremap <silent> <Leader>c :bp<BAR>bd#<CR>
-nnoremap <F10> :qa<CR>
-
+nnoremap <silent> <F10> :qa<CR>
