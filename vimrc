@@ -1,6 +1,6 @@
 " share ~/.vimrc between vim and neovim without a neovim config file
 " put this into .profile
-" export VIMINIT='let $MYVIMRC="$HOME/.vimrc" | source $MYVIMRC'
+" export VIMINIT='let $MYVIMRC="$HOME/.vim/vimrc" | source $MYVIMRC'
 " map to open ~/.vimrc file in a split
 nnoremap <leader>ev :vsplit $MYVIMRC<CR>
 set number
