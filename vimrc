@@ -7,6 +7,10 @@ set number
 nnoremap <silent> <F2> :set nonumber!<CR>
 set background=light "for neovim
 set mouse=a  " enable mouse
+set encoding=utf-8
+set noswapfile          " To disable the swap files
+set scrolloff=7
+set cursorline
 
 " cursor shape for vim. It doesn't need for nvim:
 if &term =~? 'rxvt' || &term =~? 'xterm' || &term =~? 'st-'
