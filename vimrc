@@ -77,3 +77,4 @@ noremap <c-l> <c-w><c-l>
 " закрытие буфера с сохранением окна
 nnoremap <silent> <Leader>c :bp<BAR>bd#<CR>
 nnoremap <silent> <F10> :qa<CR>
+nnoremap <silent> <F9> :Lex<CR>
