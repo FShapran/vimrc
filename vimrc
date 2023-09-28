@@ -108,7 +108,42 @@ set incsearch                  " Incremental search, hit `<CR>` to stop.
 set hlsearch " Highlight search results for VIM
 " turn off search highlight. Defaul is <c-l>
 nnoremap <silent> ,<space> :nohlsearch<CR>
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Indentation
+"You can check where the indent options were set via
+":verbose setlocal ts? sts? sw? et?
+"You can check filetype
+":set filetype
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"Vim has 5 options relating to (manual) indentation:
+"
+"Name	    Shorthand	Default Value
+"expandtab	    et	off
+"tabstop        ts  8
+"shiftwidth	    sw	8
+"softtabstop	  sts	0
+"smarttab	sta	  off (Neovim: on)
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" by default, the indent is 2 spaces. 
+" всё по отступать ещё нужно проверить:
+set shiftwidth=2
+set softtabstop=2
+set tabstop=2
 
+" for html files 2 spaces
+autocmd Filetype html,json,yaml setlocal ts=2 sw=2 expandtab
+" for js 4 spaces
+autocmd Filetype python,javascript setlocal ts=4 sw=4 sts=0 expandtab
+
+"au BufNewFile,BufRead *.py
+"    \ set expandtab
+"    \ set tabstop=4
+"    \ set softtabstop=4
+"    \ set shiftwidth=4
+"au BufNewFile,BufRead *.js,*.html,*.css,*.json
+"    \ set tabstop=2
+"    \ set softtabstop=2
+"    \ set shiftwidth=2
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " netrw
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -164,3 +199,6 @@ nnoremap <silent> <F10> :qa<CR>
 " с этой помощью можно поизучать цвета
 " highlight ColorColumn ctermbg=235 guibg=#2c2d27
 " set colorcolumn=80
+"
+"
+"
