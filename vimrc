@@ -1,3 +1,4 @@
+" todo назачить <space>2...для открытия файлов по номеру окна
 " share ~/.vimrc between vim and neovim without a neovim config file
 " put this into .profile
 " export VIMINIT='let $MYVIMRC="$HOME/.vimrc" | source $MYVIMRC'
@@ -131,9 +132,9 @@ set softtabstop=2
 set tabstop=2
 
 " for html files 2 spaces
-autocmd Filetype html,json,yaml setlocal ts=2 sw=2 expandtab
+autocmd Filetype html,json,yaml set ts=2 sw=2 expandtab
 " for js 4 spaces
-autocmd Filetype python,javascript setlocal ts=4 sw=4 sts=0 expandtab
+autocmd Filetype python,javascript set ts=4 sw=4 sts=4 expandtab
 
 "au BufNewFile,BufRead *.py
 "    \ set expandtab
