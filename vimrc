@@ -4,12 +4,10 @@
 " export VIMINIT='let $MYVIMRC="$HOME/.vimrc" | source $MYVIMRC'
 " map to open ~/.vimrc file in a split
 nnoremap <leader>ev :vsplit $MYVIMRC<CR>
-set number
-nnoremap <F2> :set nonumber!<CR>
-"if &ft == "netrw"
-"	nnoremap <F2> <Nop>
-"endif
-"au FileType netrw nnoremap <F2> <Nop>
+" set number by <F2> to all files except netrw
+autocmd FileType * if &ft != 'netrw' | nnoremap <F2> :set nonumber!<CR> | endif
+autocmd BufEnter * if &ft == 'netrw' | nmap <buffer> <F2> <Nop> | endif
+
 set background=light "for neovim
 set mouse=a  " enable mouse
 
@@ -37,6 +35,7 @@ if &term =~? 'rxvt' || &term =~? 'xterm' || &term =~? 'st-'
     " Normal Mode
     let &t_EI .= "\<Esc>[2 q"
 endif
+
 " 7=Grey,8=DarkGrey
 highlight LineNr     term=bold cterm=NONE ctermbg=7 ctermfg=DarkGrey
 highlight CursorLineNr term=bold cterm=NONE ctermbg=7 ctermfg=1* "1* = Red
@@ -96,6 +95,32 @@ function! CurrWin() abort
   return l:current_win
 endfunction
 
+"Function: return the permissions for an existing file
+augroup Get_file_perm
+	autocmd!
+	autocmd BufWinEnter,FileChangedShell * let w:file_perm=getfperm(expand('%:p'))
+augroup END
+"Output, e.g. rw-rw-r--
+
+" ...
+let w:file_perm=<sid>Get_file_perm()
+" ...
+function! s:Get_file_perm() abort
+  let a=getfperm(expand('%:p'))
+  if strlen(a)
+    return a
+  else
+     let b=printf("%o", xor(0777,system("umask")))
+     let c=""
+     for d in [0, 1, 2]
+       let c.=and(b[d], 4) ? "r" : "-"
+       let c.=and(b[d], 2) ? "w" : "-"
+       let c.=and(b[d], 1) ? "x" : "-"
+     endfor
+     return c
+   endif
+ endfunction
+
 set laststatus=2 "always show statusline
 set statusline=
 " set statusline+=%{ChangeStatuslineColor()}               " Changing the statusline color
@@ -109,6 +134,7 @@ set statusline+=\ %r "read only flag
 set statusline+=\ %c "Column number (byte index)
 set statusline+=\:\%l "line number
 set statusline+=\[\%L\]\ "number of lines in buffer
+"set statusline+=\ %{w:file_perm}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " VertSplit
