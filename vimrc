@@ -85,13 +85,16 @@ endfunction
 set laststatus=2 "always show statusline
 set statusline=
 " set statusline+=%{ChangeStatuslineColor()}               " Changing the statusline color
-set statusline+=%0*\ %{toupper(g:currentmode[mode()])}   " Current mode
-set statusline+=\ \Win:\%{CurrWin()}
-set statusline+=\ \BufN:\%n "buffer number
+set statusline+=\ " small indent
+set statusline+=\ %{toupper(g:currentmode[mode()])}   " Current mode
+set statusline+=\ \[W:\%{CurrWin()}\]
 set statusline+=\ %F "full path to the file in the buffer
+set statusline+=\ %y "full path to the file in the buffer
 set statusline+=\ %m "modified
 set statusline+=\ %r "read only flag
-set statusline+=\ \Lines:\%L "number of lines in buffer
+set statusline+=\ %c "Column number (byte index)
+set statusline+=\:\%l "line number
+set statusline+=\[\%L\]\ "number of lines in buffer
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -107,6 +110,8 @@ set backspace=indent,eol,start " Intuitive backspace behavior.
 set incsearch                  " Incremental search, hit `<CR>` to stop.
 
 set hlsearch " Highlight search results for VIM
+" but not when soursing .vimrc
+let @/ = ""
 " turn off search highlight. Defaul is <c-l>
 nnoremap <silent> ,<space> :nohlsearch<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
