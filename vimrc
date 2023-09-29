@@ -6,8 +6,22 @@
 nnoremap <leader>ev :vsplit $MYVIMRC<CR>
 set number
 nnoremap <F2> :set nonumber!<CR>
+"if &ft == "netrw"
+"	nnoremap <F2> <Nop>
+"endif
+"au FileType netrw nnoremap <F2> <Nop>
 set background=light "for neovim
 set mouse=a  " enable mouse
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Highlight Cursorline and Number
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" set cursorline only in the current window
+augroup CursorLine
+  au!
+  au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  au WinLeave * setlocal nocursorline
+augroup END
 
 " cursor shape for vim. It doesn't need for nvim:
 if &term =~? 'rxvt' || &term =~? 'xterm' || &term =~? 'st-'
@@ -23,7 +37,11 @@ if &term =~? 'rxvt' || &term =~? 'xterm' || &term =~? 'st-'
     " Normal Mode
     let &t_EI .= "\<Esc>[2 q"
 endif
-
+" 7=Grey,8=DarkGrey
+highlight LineNr     term=bold cterm=NONE ctermbg=7 ctermfg=DarkGrey
+highlight CursorLineNr term=bold cterm=NONE ctermbg=7 ctermfg=1* "1* = Red
+highlight CursorLine term=bold cterm=NONE ctermbg=7 ctermfg=NONE
+highlight Visual     term=bold cterm=NONE ctermbg=8 ctermfg=NONE
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Statusline
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -50,15 +68,6 @@ let g:currentmode={
       \}
 
 
-" highlight User1 cterm=None gui=None ctermfg=007 guifg=fgcolor
-" highlight User2 cterm=None gui=None ctermfg=008 guifg=bgcolor
-" highlight User3 cterm=None gui=None ctermfg=008 guifg=bgcolor
-" highlight User4 cterm=None gui=None ctermfg=008 guifg=bgcolor
-" highlight User5 cterm=None gui=None ctermfg=008 guifg=bgcolor
-" highlight User7 cterm=None gui=None ctermfg=008 guifg=bgcolor
-" highlight User8 cterm=None gui=None ctermfg=008 guifg=bgcolor
-" highlight User9 cterm=None gui=None ctermfg=007 guifg=fgcolor
-
 " Automatically change the statusline color depending on mode
 " не работает эта штука - цвет выбеляет один раз и всё...
 function! ChangeStatuslineColor()
@@ -74,6 +83,11 @@ function! ChangeStatuslineColor()
 
   return ''
 endfunction
+
+" Current Window Statusline
+highlight Statusline term=bold cterm=NONE ctermbg=Green ctermfg=white
+" Another Window Statusline
+highlight StatusLineNC term=bold cterm=NONE ctermbg=248 ctermfg=8
 
 "Function: return window number: I use it for statusline
 "abort -> function will abort soon as error detected
@@ -97,16 +111,27 @@ set statusline+=\:\%l "line number
 set statusline+=\[\%L\]\ "number of lines in buffer
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" VertSplit
+highlight VertSplit term=bold cterm=NONE ctermbg=15 ctermfg=8
+set fillchars+=vert:\▏" not need for nvim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Enabling filetype support provides filetype-specific indenting,
 " syntax highlighting, omni-completion and other useful settings.
 filetype plugin indent on
+filetype plugin on "это сам добавил сомневаясь в предыдущем
 syntax on
 
 set autoindent                 " Minimal automatic indenting for any filetype.
+set smartindent		" Mayby it would be useful for Python 20230929
 set backspace=indent,eol,start " Intuitive backspace behavior.
 "set hidden                     " Possibility to have more than one unsaved buffers.
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Search
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set incsearch                  " Incremental search, hit `<CR>` to stop.
 
 set hlsearch " Highlight search results for VIM
@@ -141,15 +166,6 @@ autocmd Filetype html,json,yaml set ts=2 sw=2 expandtab
 " for js 4 spaces
 autocmd Filetype python,javascript set ts=4 sw=4 sts=4 expandtab
 
-"au BufNewFile,BufRead *.py
-"    \ set expandtab
-"    \ set tabstop=4
-"    \ set softtabstop=4
-"    \ set shiftwidth=4
-"au BufNewFile,BufRead *.js,*.html,*.css,*.json
-"    \ set tabstop=2
-"    \ set softtabstop=2
-"    \ set shiftwidth=2
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " netrw
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -202,9 +218,16 @@ nnoremap <silent> <F10> :qa<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" с этой помощью можно поизучать цвета
-" highlight ColorColumn ctermbg=235 guibg=#2c2d27
-" set colorcolumn=80
-"
-"
-"
+" Functions
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Show all local changes in vim file before :w
+function! s:DiffWithSaved()
+  let filetype=&ft
+  diffthis
+  vnew | r # | normal! 1Gdd
+  diffthis
+  exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+endfunction
+com! DiffSaved call s:DiffWithSaved()
+" following command to show changes before saving buffer
+":DiffSaved 
